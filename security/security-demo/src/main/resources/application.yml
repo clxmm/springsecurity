@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/security-demo?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
+
+
+  session:
+    store-type: none  #关闭session 配置
+security:
+  basic:
+    enabled: false   #  关闭security  的验证
