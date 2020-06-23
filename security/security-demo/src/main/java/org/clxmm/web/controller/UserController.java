@@ -5,8 +5,11 @@ import org.clxmm.dto.User;
 import org.clxmm.dto.UserQueryCondition;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,5 +59,50 @@ public class UserController {
         return user;
     }
 
+
+    @PostMapping
+    public User create(@Valid @RequestBody User user, BindingResult errors) {
+
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(e -> {
+                System.out.println(e.getDefaultMessage());
+
+                FieldError fieldError = (FieldError) errors;
+
+                String s = fieldError.getField() + e.getDefaultMessage();
+                System.out.println(s);
+            });
+        }
+
+        System.out.println(user);
+        user.setId(1);
+
+
+        return user;
+    }
+
+    @PutMapping(value = "/{id:\\d+}")
+    public User update(@Valid @RequestBody User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(e -> {
+                System.out.println(e.getDefaultMessage());
+
+                FieldError fieldError = (FieldError) e;
+
+                String s = fieldError.getField() + e.getDefaultMessage();
+                System.out.println(s);
+            });
+        }
+
+        System.out.println(user);
+        user.setId(3);
+        return user;
+    }
+
+
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable String id) {
+        System.out.println(id);
+    }
 
 }
