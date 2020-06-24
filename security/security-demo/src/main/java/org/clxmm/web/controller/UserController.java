@@ -3,6 +3,7 @@ package org.clxmm.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.clxmm.dto.User;
 import org.clxmm.dto.UserQueryCondition;
+import org.clxmm.exception.UserNotExistException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
@@ -54,9 +55,17 @@ public class UserController {
     @GetMapping(value = "/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
     public User getInfo(@PathVariable String id) {
+
+//        throw new UserNotExistException("1");
+        throw new RuntimeException("1");
+/*        try {
+            Thread.sleep(1_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         User user = new User();
         user.setUsername("tom");
-        return user;
+        return user;*/
     }
 
 
@@ -76,8 +85,6 @@ public class UserController {
 
         System.out.println(user);
         user.setId(1);
-
-
         return user;
     }
 
