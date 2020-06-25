@@ -7,7 +7,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 
 /**
  * @author clx
@@ -24,6 +23,8 @@ public class TimeInterceptor implements HandlerInterceptor {
         System.out.println(handlerMethod.getBean().getClass().getName());
         System.out.println(handlerMethod.getMethod().getName());
 
+
+        System.out.println(httpServletRequest.getParameter("name"));
         httpServletRequest.setAttribute("startTime", System.currentTimeMillis());
 
         return true;
@@ -43,7 +44,6 @@ public class TimeInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception ex) throws Exception {
 
         System.out.println("afterCompletion");
-
 
         Long start = (Long) httpServletRequest.getAttribute("startTime");
         System.out.println("time interceptor 耗时:" + (System.currentTimeMillis() - start));

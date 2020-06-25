@@ -1,6 +1,8 @@
 package org.clxmm.web.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.clxmm.dto.User;
 import org.clxmm.dto.UserQueryCondition;
 import org.clxmm.exception.UserNotExistException;
@@ -31,6 +33,7 @@ public class UserController {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @JsonView(User.UserSimpleView.class)
+
 //    public List<User> query(@RequestParam(name = "username", required = false, defaultValue = "tom") String username) {
     public List<User> query(UserQueryCondition queryCondition,
                             @PageableDefault(page = 1, size = 11) Pageable pageable) {
@@ -54,18 +57,18 @@ public class UserController {
      */
     @GetMapping(value = "/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
-    public User getInfo(@PathVariable String id) {
-
+    public User getInfo(@PathVariable String id,String name) {
+        System.out.println(name);
 //        throw new UserNotExistException("1");
-        throw new RuntimeException("1");
-/*        try {
+//        throw new RuntimeException("1");
+        try {
             Thread.sleep(1_000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         User user = new User();
         user.setUsername("tom");
-        return user;*/
+        return user;
     }
 
 
@@ -108,8 +111,16 @@ public class UserController {
 
 
     @DeleteMapping("/{id:\\d+}")
-    public void delete(@PathVariable String id) {
+    @ApiOperation("用户删除")
+    public void delete(@ApiParam("用户id") @PathVariable String id) {
         System.out.println(id);
     }
+
+
+
+
+
+
+
 
 }

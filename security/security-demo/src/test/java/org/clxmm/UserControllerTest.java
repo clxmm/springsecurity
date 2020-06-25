@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserController {
+public class UserControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -97,7 +98,7 @@ public class UserController {
 
             Date date = new Date();
             System.out.println(date.getTime());
-            String count = "{\"username\":\"tom\",\"password\":null,\"birthday\":"+date.getTime()+"}";
+            String count = "{\"username\":\"tom\",\"password\":null,\"birthday\":" + date.getTime() + "}";
 
             String s = mockMvc.perform(post("/user")
                     .contentType(MediaType.APPLICATION_JSON_UTF8).content(count))
@@ -115,14 +116,13 @@ public class UserController {
     }
 
 
-
     @Test
     public void whenUpdateSuccess() {
         try {
 
             Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
             System.out.println(date.getTime());
-            String count = "{\"id\":\"1\", \"username\":\"tom\",\"password\":null,\"birthday\":"+date.getTime()+"}";
+            String count = "{\"id\":\"1\", \"username\":\"tom\",\"password\":null,\"birthday\":" + date.getTime() + "}";
 
             String s = mockMvc.perform(put("/user/1")
                     .contentType(MediaType.APPLICATION_JSON_UTF8).content(count))
@@ -137,10 +137,7 @@ public class UserController {
         }
 
 
-
-
     }
-
 
 
     @Test
@@ -148,6 +145,34 @@ public class UserController {
         mockMvc.perform(delete("/user/1")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
+    }
+
+
+    /**
+     * 文件上传测试
+     */
+    @Test
+    public void fileUploadSuccess() {
+
+
+        try {
+            String file = mockMvc.perform(fileUpload("/file")
+                    .file(new MockMultipartFile("file", "test.txt", "multipart/form-data", "hello file".getBytes())))
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+            System.out.println(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    @Test
+    public void download() {
+
+
+
     }
 
 }
