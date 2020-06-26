@@ -11,7 +11,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author clx
  * @date 2020-06-21 21:19
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"org.clxmm","org.clxmm"})
 @RestController
 @EnableSwagger2
 public class DemoApplication {

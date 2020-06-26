@@ -8,6 +8,16 @@ spring:
 
   session:
     store-type: none  #关闭session 配置
-security:
-  basic:
-    enabled: false   #  关闭security  的验证
+#security:
+#  basic:
+#    enabled: false   #  关闭security  的验证
+
+
+
+
+
+
+#clx:
+#  security:
+#    browser:
+##      loginPage: /demo-singIn.html

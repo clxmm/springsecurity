@@ -6,7 +6,6 @@
         <artifactId>security</artifactId>
         <groupId>org.clxmm</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../security</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
