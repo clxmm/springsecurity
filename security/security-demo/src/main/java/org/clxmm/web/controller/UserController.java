@@ -8,6 +8,10 @@ import org.clxmm.dto.UserQueryCondition;
 import org.clxmm.exception.UserNotExistException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +29,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+
+    @GetMapping("/me")
+    public Object getCurrentUser(Authentication authentication, @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println(authentication);
+        return SecurityContextHolder.getContext().getAuthentication() + "--"+userDetails;
+    }
 
     /**
      * @param queryCondition
@@ -57,7 +67,7 @@ public class UserController {
      */
     @GetMapping(value = "/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
-    public User getInfo(@PathVariable String id,String name) {
+    public User getInfo(@PathVariable String id, String name) {
         System.out.println(name);
 //        throw new UserNotExistException("1");
 //        throw new RuntimeException("1");
@@ -115,12 +125,6 @@ public class UserController {
     public void delete(@ApiParam("用户id") @PathVariable String id) {
         System.out.println(id);
     }
-
-
-
-
-
-
 
 
 }

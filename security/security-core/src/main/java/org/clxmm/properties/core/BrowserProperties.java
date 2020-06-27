@@ -1,6 +1,7 @@
 package org.clxmm.properties.core;
 
 import lombok.Data;
+import org.clxmm.properties.LoginResponseType;
 
 /**
  * @author clx
@@ -10,4 +11,7 @@ import lombok.Data;
 public class BrowserProperties {
 
     private String loginPage = "/login_c.html";
+
+
+    private LoginResponseType loginType = LoginResponseType.JSON;
 }
