@@ -14,6 +14,9 @@ public class SecurityProperties {
 
     private BrowserProperties browser = new BrowserProperties();
 
+    ValidateCodeProperties code = new ValidateCodeProperties();
+
+
 
 
 }

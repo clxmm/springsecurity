@@ -21,3 +21,12 @@ spring:
 #  security:
 #    browser:
 ##      loginPage: /demo-singIn.html
+clx:
+  security:
+    code:
+      image:
+        length: 6
+        width: 100
+#        url: /user,/user/*
+        url: /user/*
+
