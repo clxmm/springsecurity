@@ -1,8 +1,7 @@
-package org.clxmm.properties.image;
+package org.clxmm.validate.code.image;
 
 import org.clxmm.properties.core.ImageCodeProperties;
 import org.clxmm.properties.core.SecurityProperties;
-import org.clxmm.validate.code.ImageCode;
 import org.clxmm.validate.code.ValidateCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;

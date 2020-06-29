@@ -1,8 +1,7 @@
 package org.clxmm.code;
 
-import org.clxmm.validate.code.ImageCode;
+import org.clxmm.validate.code.image.ImageCode;
 import org.clxmm.validate.code.ValidateCodeGenerator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**

@@ -1,10 +1,12 @@
 package org.clxmm.validate.code;
 
-import org.clxmm.properties.core.ImageCodeProperties;
 import org.clxmm.properties.core.SecurityProperties;
+import org.clxmm.validate.code.image.ImageCode;
+import org.clxmm.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +15,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * @author clx
@@ -39,19 +38,45 @@ public class ValidateCodeController {
     @Autowired
     private ValidateCodeGenerator imageCodeGenerator;
 
+
+    @Autowired
+    private ValidateCodeGenerator smsCodeGenerator;
+
+    @Autowired
+    private SmsCodeSender smsCodeSender;
+
     /**
+     * 图形验证码的接口
+     *
      * @param request
      * @param response
      */
     @GetMapping("/code/image")
     public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ImageCode imageCode = imageCodeGenerator.generate(new ServletWebRequest(request));
+        ImageCode imageCode = (ImageCode) imageCodeGenerator.generate(new ServletWebRequest(request));
         sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, imageCode);
         ImageIO.write(imageCode.getImage(), "jpeg", response.getOutputStream());
 
     }
 
+    /**
+     * 短信验证码的接口
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @GetMapping("/code/sms")
+    public void createSmsCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletRequestBindingException {
+        validateCode smsCode = smsCodeGenerator.generate(new ServletWebRequest(request));
+        sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, smsCode);
 
+        //通过短信服务商发送短信---------> 提供一个短信发送的接口，可以让不同的短信供应商使用
+
+        String mobile = ServletRequestUtils.getRequiredStringParameter(request, "mobile");
+
+        smsCodeSender.send(mobile, smsCode.getCode());
+    }
 
 
     /**

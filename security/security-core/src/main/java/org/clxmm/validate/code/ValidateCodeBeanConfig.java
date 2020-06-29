@@ -1,7 +1,9 @@
 package org.clxmm.validate.code;
 
 import org.clxmm.properties.core.SecurityProperties;
-import org.clxmm.properties.image.ImageCodeGenerator;
+import org.clxmm.validate.code.image.ImageCodeGenerator;
+import org.clxmm.validate.code.sms.DefaultSmsCodeSender;
+import org.clxmm.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +22,7 @@ public class ValidateCodeBeanConfig {
 
     /**
      * ConditionalOnMissingBean  在启动之前查看是否存在imageValidateCodeGenerator  ，不存在才用默认的配置
+     *
      * @return
      */
     @Bean
@@ -28,5 +31,15 @@ public class ValidateCodeBeanConfig {
         ImageCodeGenerator codeGenerator = new ImageCodeGenerator();
         codeGenerator.setSecurityProperties(securityProperties);
         return codeGenerator;
+    }
+
+
+    /**
+     * 第二种写法
+     */
+    @Bean
+    @ConditionalOnMissingBean(SmsCodeSender.class)
+    public SmsCodeSender smsCodeSender() {
+        return new DefaultSmsCodeSender();
     }
 }

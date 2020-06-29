@@ -2,6 +2,7 @@ package org.clxmm.validate.code;
 
 import org.apache.commons.lang.StringUtils;
 import org.clxmm.properties.core.SecurityProperties;
+import org.clxmm.validate.code.image.ImageCode;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -51,8 +52,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
         String[] config = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(),",");
-        for (String s : config) {
-            urls.add(s);
+        if (config!=null) {
+            for (String s : config) {
+                urls.add(s);
+            }
         }
         urls.add("/authentication/form");
     }
