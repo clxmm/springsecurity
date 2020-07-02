@@ -1,10 +1,15 @@
 package org.clxmm.bowser;
 
+import org.clxmm.authentication.AbstractChannelSecurityConfig;
 import org.clxmm.authentication.ImoocAuthenctiationFailureHandler;
 import org.clxmm.authentication.ImoocAuthenticationSuccessHandler;
+import org.clxmm.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import org.clxmm.properties.core.BrowserProperties;
+import org.clxmm.properties.core.SecurityConstants;
 import org.clxmm.properties.core.SecurityProperties;
+import org.clxmm.validate.code.SmsCodeFilter;
 import org.clxmm.validate.code.ValidateCodeFilter;
+import org.clxmm.validate.code.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 
@@ -26,7 +32,7 @@ import javax.sql.DataSource;
  * @date 2020-06-26 15:50
  */
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
 
     @Autowired
@@ -46,6 +52,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
+
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -62,12 +75,45 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        applyPasswordAuthenticationConfig(http);
+        http.apply(validateCodeSecurityConfig)
+                .and()
+                .apply(smsCodeAuthenticationSecurityConfig)
+
+                .and()
+                .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
+                .and()
+                .authorizeRequests()
+                .antMatchers(
+                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                        securityProperties.getBrowser().getLoginPage(),
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
+                        "/code/image"
+
+
+                )
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf().disable();
+
+
+    }
+
+
+    /*    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         //用默认的表单登录
-       /* http.formLogin()
+       *//* http.formLogin()
                 .and()
                 .authorizeRequests()
                 .anyRequest()
-                .authenticated();*/
+                .authenticated();*//*
 
 
         ValidateCodeFilter filter = new ValidateCodeFilter();
@@ -76,9 +122,18 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.afterPropertiesSet();
 
 
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(imoocAuthenctiationFailureHandler);
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        smsCodeFilter.afterPropertiesSet();
+
+
+
+
+
         BrowserProperties browser = securityProperties.getBrowser();
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-
+                .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 //添加自己的过滤器
                 .formLogin()
 //                     .loginPage("/login_c.html")
@@ -97,14 +152,16 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 //放行
                 .antMatchers("/authentication/require",
                         browser.getLoginPage(),
-                        "/code/image")
+                        "/code/*","/code/image")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+            //添加smsCodeAuthenticationSecurityConfig的过滤器到浏览器过滤器链的后面
+        .apply(smsCodeAuthenticationSecurityConfig);
 
-    }
+    }*/
 
 
     @Override

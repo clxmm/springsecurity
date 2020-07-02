@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @date 2020-06-27 18:30
  */
 @Data
-public class validateCode {
+public class ValidateCode {
 
 
     private String code;
@@ -23,13 +23,13 @@ public class validateCode {
      * @param code
      * @param expireTime 多少秒之后过期
      */
-    public validateCode(String code, int expireTime) {
+    public ValidateCode(String code, int expireTime) {
         this.code = code;
         this.expireTime = LocalDateTime.now().plusSeconds(expireTime);
     }
 
 
-    public validateCode(String code, LocalDateTime expireTime) {
+    public ValidateCode(String code, LocalDateTime expireTime) {
         this.code = code;
         this.expireTime = expireTime;
     }

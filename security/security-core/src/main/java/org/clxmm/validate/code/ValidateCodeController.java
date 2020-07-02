@@ -1,5 +1,6 @@
 package org.clxmm.validate.code;
 
+import org.clxmm.properties.core.SecurityConstants;
 import org.clxmm.properties.core.SecurityProperties;
 import org.clxmm.validate.code.image.ImageCode;
 import org.clxmm.validate.code.sms.SmsCodeSender;
@@ -9,6 +10,7 @@ import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -25,7 +27,31 @@ import java.io.IOException;
 public class ValidateCodeController {
 
 
-    // 操作session的工具类
+    @Autowired
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
+
+
+
+    /**
+     * 创建验证码，根据验证码类型不同，调用不同的 {@link ValidateCodeProcessor}接口实现
+     *
+     * @param request
+     * @param response
+     * @param type
+     * @throws Exception
+     */
+    @GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
+    public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type)
+            throws Exception {
+        ValidateCodeProcessor validateCodeProcessor = validateCodeProcessorHolder.findValidateCodeProcessor(type);
+        validateCodeProcessor.create(new ServletWebRequest(request, response));
+    }
+
+
+
+
+
+ /*   // 操作session的工具类
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
 
@@ -45,12 +71,12 @@ public class ValidateCodeController {
     @Autowired
     private SmsCodeSender smsCodeSender;
 
-    /**
+    *//**
      * 图形验证码的接口
      *
      * @param request
      * @param response
-     */
+     *//*
     @GetMapping("/code/image")
     public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ImageCode imageCode = (ImageCode) imageCodeGenerator.generate(new ServletWebRequest(request));
@@ -59,16 +85,16 @@ public class ValidateCodeController {
 
     }
 
-    /**
+    *//**
      * 短信验证码的接口
      *
      * @param request
      * @param response
      * @throws IOException
-     */
+     *//*
     @GetMapping("/code/sms")
     public void createSmsCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletRequestBindingException {
-        validateCode smsCode = smsCodeGenerator.generate(new ServletWebRequest(request));
+        ValidateCode smsCode = smsCodeGenerator.generate(new ServletWebRequest(request));
         sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, smsCode);
 
         //通过短信服务商发送短信---------> 提供一个短信发送的接口，可以让不同的短信供应商使用
@@ -76,7 +102,7 @@ public class ValidateCodeController {
         String mobile = ServletRequestUtils.getRequiredStringParameter(request, "mobile");
 
         smsCodeSender.send(mobile, smsCode.getCode());
-    }
+    }*/
 
 
     /**

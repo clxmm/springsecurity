@@ -1,7 +1,7 @@
 package org.clxmm.validate.code.image;
 
 import lombok.Data;
-import org.clxmm.validate.code.validateCode;
+import org.clxmm.validate.code.ValidateCode;
 
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @date 2020-06-27 18:30
  */
 @Data
-public class ImageCode extends validateCode {
+public class ImageCode extends ValidateCode {
 
 
     private BufferedImage image;

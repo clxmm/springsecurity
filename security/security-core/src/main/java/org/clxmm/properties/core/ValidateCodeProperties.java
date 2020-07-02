@@ -12,6 +12,8 @@ public class ValidateCodeProperties {
 
     private ImageCodeProperties image = new ImageCodeProperties();
 
+    SmsCodeProperties sms = new SmsCodeProperties();
+
 
 
 }

@@ -4,6 +4,7 @@ import org.clxmm.properties.core.ImageCodeProperties;
 import org.clxmm.properties.core.SecurityProperties;
 import org.clxmm.validate.code.ValidateCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -15,6 +16,7 @@ import java.util.Random;
  * @author clx
  * @date 2020-06-28 21:13
  */
+@Component("imageValidateCodeGenerator")
 public class ImageCodeGenerator implements ValidateCodeGenerator {
 
 
