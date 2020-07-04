@@ -59,6 +59,10 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
+
+    @Autowired
+    private SpringSocialConfigurer clxSocialConfigurer;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -79,7 +83,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         http.apply(validateCodeSecurityConfig)
                 .and()
                 .apply(smsCodeAuthenticationSecurityConfig)
-
+                .and()
+                .apply(clxSocialConfigurer)
                 .and()
                 .rememberMe()
                 .tokenRepository(persistentTokenRepository())
@@ -92,7 +97,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                         securityProperties.getBrowser().getLoginPage(),
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-                        "/code/image"
+                        "/auth/qq",
+                        "/qqLogin/callback.do"
 
 
                 )
